@@ -1,0 +1,56 @@
+services:
+  # Serviço 1: Banco de Dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: monica_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - monica_network
+
+  # Serviço 2: Aplicação Monica HQ
+  app:
+    image: monica:latest
+    container_name: monica_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      APP_KEY: ${APP_KEY}
+      APP_ENV: local
+      APP_URL: ${APP_URL}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - monica_data:/var/www/html/storage
+    depends_on:
+      - db
+    networks:
+      - monica_network
+
+# Redes personalizadas (isolamento entre serviços)
+networks:
+  monica_network:
+    driver: bridge
+
+# Volumes persistentes (para não perder os dados após restart)
+volumes:
+  mysql_data:
+  monica_data:
+
+  #Sintaxe ${NOME_DA_VARIAVEL}: O Docker Compose busca o valor direto do arquivo.env que você criou no passo anterior.
+
+#DB_HOST: db: O Monica conversa com o banco de dados pelo nome do serviço (db). O Docker gerencia a conexão entre eles automaticamente através da rede monica_network.
+
+#depends_on: Diz ao Docker para ligar o banco de dados antes de ligar o Monica.
+
+#ports: - "8080:80": Apenas a aplicação expõe a porta 8080 para o seu computador. O banco de dados MySQL não tem ports:, garantindo o requisito de segurança!
