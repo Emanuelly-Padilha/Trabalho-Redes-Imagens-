@@ -47,10 +47,4 @@ volumes:
   mysql_data:
   monica_data:
 
-  #Sintaxe ${NOME_DA_VARIAVEL}: O Docker Compose busca o valor direto do arquivo.env que você criou no passo anterior.
-
-#DB_HOST: db: O Monica conversa com o banco de dados pelo nome do serviço (db). O Docker gerencia a conexão entre eles automaticamente através da rede monica_network.
-
-#depends_on: Diz ao Docker para ligar o banco de dados antes de ligar o Monica.
-
-#ports: - "8080:80": Apenas a aplicação expõe a porta 8080 para o seu computador. O banco de dados MySQL não tem ports:, garantindo o requisito de segurança!
+    
